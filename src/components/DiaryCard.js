@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-export default function DiaryCard({ title, date, preview, moodUri }) {
+export default function DiaryCard({ title, date, preview, moodUri, moodImage }) {
     return (
     <View style={styles.card}>
-        <Image source={{ uri: moodUri }} style={styles.mood} />
+        <Image source={moodImage ?? { uri: moodUri }} style={styles.mood} />
         <View style={styles.content}>
             <Text style={styles.title} numberOfLines={1}>{title}</Text>
             <Text style={styles.date}>{date}</Text>

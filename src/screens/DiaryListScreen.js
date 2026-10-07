@@ -24,6 +24,20 @@ const diaryEntries = [
         preview: 'Pagi ini aku memulai hari dengan jadwal yang padat. Banyak tugas yang harus diselesaikan, dan aku merasa sedikit kewalahan. Namun, aku mencoba untuk tetap fokus dan menyelesaikan satu per satu...',
         moodUri: 'https://picsum.photos/seed/busy/80',
     },
+    {
+        id: 4,
+        title: 'Petualangan di Alam',
+        date: '2026-10-07',
+        preview: 'Hari ini aku pergi berpetualang ke alam. Menikmati pemandangan indah, udara segar, dan suara alam yang menenangkan. Rasanya menyegarkan pikiran dan tubuh setelah beberapa hari bekerja...',
+        moodUri: 'https://picsum.photos/seed/adventure/80',
+    },
+    {
+        id: 5,
+        title: 'Menikmati senja di Pantai',
+        date: '2026-10-07',
+        preview: 'Hari ini perasaanku bercampur antara kebahagiaan dan rasa sedih. Karena matahari melihatkan sisi indahnya sebelum dia pergi menghilang dan hanya menyisakan kenangan....',
+        moodImage: require('../../assets/moods/sunset.png')
+    },
 ];
 
 export default function DiaryListScreen() {
@@ -37,6 +51,7 @@ export default function DiaryListScreen() {
                     date={entry.date}
                     preview={entry.preview}
                     moodUri={entry.moodUri}
+                    moodImage={entry.moodImage}
                 />
             ))}
         </ScrollView>
