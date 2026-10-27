@@ -1,63 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  useWindowDimensions,
-} from 'react-native';
+import React from 'react';
+import { Modal, View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SPACE, RADIUS, TYPO, MOODS } from '../styles/tokens';
 import DiaryHeader from './DiaryHeader';
+import EntryImage from './EntryImage';
 
-const DEFAULT_RATIO = 16 / 9;
+const FRAME_RATIO = 4 / 3; // bentuk bingkai foto. 16 / 9 = lebih pendek
 
 export default function DiaryDetailModal({ visible, onClose, entry, liked = false }) {
-  const { height } = useWindowDimensions();
-  const [ratio, setRatio] = useState(DEFAULT_RATIO);
-
-  useEffect(() => {
-    if (!entry) return;
-    const src = entry.moodImage;
-    const clamp = (w, h) => Math.min(2, Math.max(0.5, w / h));
-
-    if (typeof src === 'number') {
-      const a = Image.resolveAssetSource(src);
-      setRatio(a?.width && a?.height ? clamp(a.width, a.height) : DEFAULT_RATIO);
-    } else if (src?.uri) {
-      Image.getSize(
-        src.uri,
-        (w, h) => setRatio(clamp(w, h)),
-        () => setRatio(DEFAULT_RATIO)
-      );
-    } else {
-      setRatio(DEFAULT_RATIO);
-    }
-  }, [entry]);
-
   if (!entry) return null;
 
-  const { title, date, body, moodImage, mood = 'neutral' } = entry;
+  const { title, date, body, photo, photoFocus = 'center', mood = 'neutral' } = entry;
   const theme = MOODS[mood] || MOODS.neutral;
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        {/* Header tetap di atas, tidak ikut scroll */}
         <DiaryHeader />
 
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-          <Image
-            source={moodImage}
-            resizeMode="cover"
-            style={[
-              styles.hero,
-              { aspectRatio: ratio, maxHeight: height * 0.35, backgroundColor: theme.bg },
-            ]}
-          />
+          <EntryImage photo={photo} focus={photoFocus} mood={mood} style={styles.hero} />
+
           <View style={styles.content}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.metaRow}>
@@ -89,6 +52,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: SPACE.xl },
   hero: {
     width: '100%',
+    aspectRatio: FRAME_RATIO,
     borderBottomLeftRadius: RADIUS.card,
     borderBottomRightRadius: RADIUS.card,
   },

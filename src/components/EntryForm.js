@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Pressable, Text, Image } from 'react-native';
 import { COLORS, SPACE, RADIUS, TYPO, MOODS } from '../styles/tokens';
-import { MOOD_IMAGES } from '../data/moodImages';
 import * as ImagePicker from 'expo-image-picker';
 
 const MOOD_OPTIONS = ['happy', 'focus', 'calm', 'sad', 'excited'];
@@ -38,7 +37,8 @@ export default function EntryForm({ onSubmit }) {
       preview: preview.trim(),
       body: preview.trim(),
       mood,
-      moodImage: photoUri ? { uri: photoUri } : MOOD_IMAGES[mood],
+      photo: photoUri ? { uri: photoUri } : MOOD_IMAGES[mood],
+      photoFocus: 'center',
     });
     setTitle('');
     setDate(todayISO());

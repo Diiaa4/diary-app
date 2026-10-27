@@ -35,7 +35,7 @@ const INITIAL_ENTRIES = [
     mood: 'focus',
     preview: 'Menyelesaikan modul praktikum dan berdiskusi dengan tim.',
     body: 'Hari ini cukup produktif karena beberapa target perkuliahan selesai. Diskusi dengan tim membantu merapikan struktur folder dan pembagian komponen.',
-    photo: 'https://picsum.photos/seed/calm/80',
+    photoUri: 'https://picsum.photos/seed/calm/80',
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const INITIAL_ENTRIES = [
     mood: 'happy',
     preview: 'Sore ini, cukup bernapas.',
     body: 'Hari ini perasaanku bercampur antara kebahagiaan dan rasa sedih. Karena matahari melihatkan sisi indahnya sebelum dia pergi menghilang dan hanya menyisakan kenangan....',
-    photo: require('../../assets/photos/sunset.png'),
+    photo: require('../../assets/photos/sunset.jpg'),
   },
   {
     id: 4,
@@ -62,7 +62,8 @@ const INITIAL_ENTRIES = [
     mood: 'excited',
     preview: 'Menepi sejenak, mengenali diri lebih dekat.',
     body: 'Gunung tidak meninggikan dirinya untuk terlihat agung, ia hanya berdiri sebagaimana mestinya. Barangkali manusia juga perlu belajar demikian, tidak sibuk membuktikan diri kepada dunia, tetapi tetap memiliki nilai meski tak selalu mendapat pengakuan.',
-    photo: require('../../assets/photos/gunung.png')
+    photo: require('../../assets/photos/gunung.png'),
+    photoFocus: 'bottom',
   },
   {
     id: 6,
@@ -80,7 +81,7 @@ const INITIAL_ENTRIES = [
     preview: 'Seluruh keluarga berkumpul, masakan ibu selalu terbaik.',
     body: 'Malam ini seluruh keluarga berkumpul di meja makan. Kami bercerita soal kuliah, pekerjaan, dan rencana liburan. Hal sederhana yang membuat hati hangat.',
   },
-].map((e) => ({ ...e, moodImage: e.photo || MOOD_IMAGES[e.mood] }));
+];
 
 export default function DiaryListScreen() {
   const { width } = useWindowDimensions();
@@ -126,7 +127,8 @@ export default function DiaryListScreen() {
         title={item.title}
         date={item.date}
         preview={item.preview}
-        moodImage={item.moodImage}
+        photo={item.photo}
+        photoFocus={item.photoFocus}
         mood={item.mood}
         liked={likedIds.has(item.id)}
         variant={twoCols ? 'grid' : 'list'}

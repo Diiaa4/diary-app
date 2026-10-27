@@ -1,14 +1,17 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { COLORS, SPACE, RADIUS, TYPO, MOODS } from '../styles/tokens';
+import EntryImage from './EntryImage';
 
 // Presentational component: hanya menerima data & callback lewat props.
-// Tidak ada useState di sini. Status like dimiliki parent.
+// Tombol like TIDAK boleh di dalam Pressable kartu (di web jadi button di dalam button).
+// Jadi: kartu = View, berisi dua Pressable bersaudara (sibling).
 export default function DiaryCard({
   title,
   date,
   preview,
-  moodImage,
+  photo,
+  photoFocus = 'center',
   mood = 'neutral',
   liked = false,
   variant = 'list',
@@ -19,41 +22,31 @@ export default function DiaryCard({
   const isGrid = variant === 'grid';
 
   return (
-    <Pressable
-      onPress={onPress}
-      android_ripple={{ color: COLORS.border }}
-      style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
-      accessible
-      accessibilityRole="button"
-      accessibilityLabel={`Entri ${title} tanggal ${date}, suasana ${theme.label}${liked ? ', disukai' : ''}`}
-      accessibilityHint="Ketuk untuk membuka detail entri"
-    >
-      <View
-        style={[
-          styles.card,
-          { borderColor: theme.border, backgroundColor: theme.bg },
-          isGrid && styles.cardGrid,
+    <View style={[styles.card, { borderColor: theme.border, backgroundColor: theme.bg }]}>
+      {/* Pressable 1: area kartu, buka modal */}
+      <Pressable
+        onPress={onPress}
+        android_ripple={{ color: COLORS.border }}
+        style={({ pressed }) => [
+          styles.body,
+          isGrid && styles.bodyGrid,
+          { opacity: pressed ? 0.85 : 1 },
         ]}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={`Entri ${title} tanggal ${date}, suasana ${theme.label}${liked ? ', disukai' : ''}`}
+        accessibilityHint="Ketuk untuk membuka detail entri"
       >
-        <Image
-          source={moodImage}
+        <EntryImage
+          photo={photo}
+          focus={photoFocus}
+          mood={mood}
           style={[styles.mood, isGrid && styles.moodGrid, { borderColor: theme.border }]}
         />
         <View style={styles.content}>
-          <View style={styles.titleRow}>
-            <Text style={styles.title} numberOfLines={1}>
-              {title}
-            </Text>
-            <Pressable
-              onPress={onToggleLike}
-              hitSlop={8}
-              style={styles.likeBtn}
-              accessibilityRole="button"
-              accessibilityLabel={liked ? `Batal suka ${title}` : `Suka ${title}`}
-            >
-              <Text style={styles.like}>{liked ? '❤️' : '🤍'}</Text>
-            </Pressable>
-          </View>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
           <View style={styles.metaRow}>
             <Text style={styles.date}>{date}</Text>
             <View style={[styles.badge, { borderColor: theme.border }]}>
@@ -64,40 +57,58 @@ export default function DiaryCard({
             {preview}
           </Text>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+
+      {/* Pressable 2: tombol like, SIBLING dari Pressable 1, bukan di dalamnya */}
+      <Pressable
+        onPress={onToggleLike}
+        hitSlop={8}
+        style={styles.likeBtn}
+        accessibilityRole="button"
+        accessibilityLabel={liked ? `Batal suka ${title}` : `Suka ${title}`}
+      >
+        <Text style={styles.like}>{liked ? '❤️' : '🤍'}</Text>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
+    borderWidth: 1,
+    borderRadius: RADIUS.card,
+    minHeight: 44,
+    overflow: 'hidden',
+  },
+  body: {
     flexDirection: 'row',
     gap: SPACE.m,
     padding: SPACE.m,
-    borderWidth: 1,
-    borderLeftWidth: 6,
-    borderRadius: RADIUS.card,
-    minHeight: 44,
   },
-  cardGrid: { flexDirection: 'column' },
+  bodyGrid: { flexDirection: 'column' },
   mood: {
     width: 64,
     height: 64,
     borderRadius: RADIUS.avatar,
     borderWidth: 2,
-    backgroundColor: COLORS.placeholder,
   },
   moodGrid: {
     width: '100%',
     height: undefined,
     aspectRatio: 16 / 9,
     borderRadius: RADIUS.card,
-    resizeMode: 'contain',
   },
-  content: { flex: 1 },
-  titleRow: { flexDirection: 'row', alignItems: 'center', gap: SPACE.s },
-  title: { flex: 1, fontSize: TYPO.title, fontWeight: '700', color: COLORS.text },
-  likeBtn: { minWidth: 32, minHeight: 32, alignItems: 'center', justifyContent: 'center' },
+  content: { flex: 1, paddingRight: 36 }, // ruang untuk tombol like
+  title: { fontSize: TYPO.title, fontWeight: '700', color: COLORS.text },
+  likeBtn: {
+    position: 'absolute',
+    top: SPACE.s,
+    right: SPACE.s,
+    minWidth: 36,
+    minHeight: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   like: { fontSize: 22 },
   metaRow: {
     flexDirection: 'row',
